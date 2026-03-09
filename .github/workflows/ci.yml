@@ -9,6 +9,10 @@ on:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Важно для деплоя
+      pages: write     # Важно для GitHub Pages
+      id-token: write
     
     steps:
       - uses: actions/checkout@v3
@@ -17,7 +21,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-          cache: 'npm'  # Кэширование зависимостей
+          cache: 'npm'
       
       - name: Cache Jest
         uses: actions/cache@v3
@@ -46,3 +50,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          publish_branch: gh-pages
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy: ${{ github.sha }}'
